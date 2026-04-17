@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>PHP Meet Room</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="meeting-shell">
+    <header class="topbar">
+      <div>
+        <strong id="roomLabel">Room:</strong>
+        <span id="connectionStatus" class="status">Connecting...</span>
+      </div>
+      <div class="topbar-actions">
+        <button id="copyLinkBtn">Copy Link</button>
+        <button id="toggleChatBtn">Chat</button>
+      </div>
+    </header>
+
+    <div class="content">
+      <section id="videoGrid" class="video-grid"></section>
+
+      <aside id="chatPanel" class="chat-panel hidden">
+        <h3>Chat</h3>
+        <div id="chatMessages" class="chat-messages"></div>
+        <div class="chat-input-row">
+          <input id="chatInput" placeholder="Type message..." />
+          <button id="sendChatBtn">Send</button>
+        </div>
+      </aside>
+    </div>
+
+    <footer class="controls">
+      <button id="toggleMicBtn">Mute</button>
+      <button id="toggleCamBtn">Camera Off</button>
+      <button id="shareScreenBtn">Share Screen</button>
+      <button id="raiseHandBtn">Raise Hand</button>
+      <button id="recordBtn">Start Recording</button>
+      <button id="leaveBtn" class="danger">Leave</button>
+    </footer>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
