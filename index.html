@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>PHP Meet - Join a room</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body class="landing-page">
+  <main class="landing-card">
+    <h1>PHP Meet</h1>
+    <p>Create a room or join an existing meeting link.</p>
+
+    <label for="displayName">Your name</label>
+    <input id="displayName" type="text" maxlength="30" placeholder="Enter your name" />
+
+    <div class="landing-actions">
+      <button id="createRoomBtn" class="primary">Create Room</button>
+    </div>
+
+    <div class="divider">or</div>
+
+    <label for="roomId">Room ID</label>
+    <input id="roomId" type="text" maxlength="32" placeholder="Paste room ID" />
+    <button id="joinRoomBtn">Join Room</button>
+
+    <p class="helper">Shared-hosting ready: uses PHP + JSON file signaling.</p>
+  </main>
+
+  <script>
+    const nameInput = document.getElementById('displayName');
+    const roomInput = document.getElementById('roomId');
+    const initialRoom = new URLSearchParams(location.search).get('room');
+    if (initialRoom) roomInput.value = initialRoom;
+
+    const getName = () => {
+      const saved = localStorage.getItem('meet_name') || '';
+      if (!nameInput.value && saved) nameInput.value = saved;
+      return (nameInput.value || '').trim();
+    };
+
+    getName();
+
+    function validateName() {
+      const name = getName();
+      if (!name) {
+        alert('Please enter your name.');
+        return null;
+      }
+      localStorage.setItem('meet_name', name);
+      return name;
+    }
+
+    document.getElementById('createRoomBtn').addEventListener('click', async () => {
+      const name = validateName();
+      if (!name) return;
+      const userId = crypto.randomUUID();
+
+      const form = new FormData();
+      form.append('action', 'create_room');
+      form.append('name', name);
+      form.append('user_id', userId);
+
+      const res = await fetch('api.php', { method: 'POST', body: form });
+      const data = await res.json();
+      if (!data.ok) return alert(data.error || 'Failed to create room');
+      window.location.href = `meeting.html?room=${encodeURIComponent(data.room_id)}&uid=${encodeURIComponent(userId)}&name=${encodeURIComponent(name)}`;
+    });
+
+    document.getElementById('joinRoomBtn').addEventListener('click', () => {
+      const name = validateName();
+      if (!name) return;
+      const room = (roomInput.value || '').trim();
+      if (!room) return alert('Enter a room ID');
+      const userId = crypto.randomUUID();
+      window.location.href = `meeting.html?room=${encodeURIComponent(room)}&uid=${encodeURIComponent(userId)}&name=${encodeURIComponent(name)}`;
+    });
+  </script>
+</body>
+</html>
